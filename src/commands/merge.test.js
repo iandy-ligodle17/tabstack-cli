@@ -42,6 +42,12 @@ test('deduplicates tabs when dedupe option is set', async () => {
   expect(result.tabs).toHaveLength(3);
 });
 
+test('preserves tab order when deduplicating', async () => {
+  const result = await merge(['work', 'research'], 'combined', { dedupe: true });
+  const urls = result.tabs.map((t) => t.url);
+  expect(urls).toEqual(['https://github.com', 'https://jira.com', 'https://mdn.com']);
+});
+
 test('throws if fewer than two sessions provided', async () => {
   await expect(merge(['work'], 'combined')).rejects.toThrow('At least two');
 });
