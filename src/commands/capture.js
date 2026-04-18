@@ -1,37 +1,44 @@
-const { getTabs } = require('../browser');
-const { saveSession } = require('../storage');
+import { getTabs } from '../browser.js';
+import { saveSession, ensureSessionsDir } from '../storage.js';
 
-async function captureCommand(sessionName, options = {}) {
-  const browser = options.browser || 'chrome';
+/**
+ * Captures the current browser tabs and saves them as a named session.
+ * @param {string} name - The session name
+ * @returns {Promise<{ name: string, count: number, path: string }>}
+ */
+export async function captureSession(name) {
+  await ensureSessionsDir();
 
-  if (!sessionName || typeof sessionName !== 'string') {
-    throw new Error('Session name is required');
+  const tabs = await getTabs();
+
+  if (!tabs || tabs.length === 0) {
+    throw new Error('No tabs found. Make sure your browser is open.');
   }
 
-  console.log(`Capturing tabs from ${browser}...`);
+  const savedPath = await saveSession(name, tabs);
 
-  let urls;
-  try {
-    urls = await getTabs(browser);
-  } catch (err) {
-    throw new Error(`Could not read tabs: ${err.message}`);
-  }
-
-  if (urls.length === 0) {
-    console.warn('No open tabs found. Session not saved.');
-    return null;
-  }
-
-  const session = {
-    name: sessionName,
-    browser,
-    urls,
-    createdAt: new Date().toISOString(),
+  return {
+    name,
+    count: tabs.length,
+    path: savedPath,
   };
-
-  await saveSession(sessionName, session);
-  console.log(`Saved session "${sessionName}" with ${urls.length} tab(s).`);
-  return session;
 }
 
-module.exports = { captureCommand };
+/**
+ * CLI handler for the capture command.
+ * @param {string} name
+ */
+export async function handleCapture(name) {
+  if (!name || name.trim() === '') {
+    console.error('Error: session name is required');
+    process.exit(1);
+  }
+
+  try {
+    const result = await captureSession(name.trim());
+    console.log(`✓ Saved ${result.count} tab(s) to session "${result.name}"`);
+  } catch (err) {
+    console.error(`Error capturing session: ${err.message}`);
+    process.exit(1);
+  }
+}
