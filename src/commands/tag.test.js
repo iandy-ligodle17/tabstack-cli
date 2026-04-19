@@ -14,6 +14,13 @@ describe('tagSession', () => {
     expect(saveSession).toHaveBeenCalledWith('mysession', expect.objectContaining({ tags: ['work', 'dev'] }));
   });
 
+  it('does not duplicate tags when appending', async () => {
+    loadSession.mockResolvedValue({ tabs: [], tags: ['work', 'dev'] });
+    saveSession.mockResolvedValue();
+    const result = await tagSession('mysession', ['work']);
+    expect(result).toEqual(['work', 'dev']);
+  });
+
   it('sets tags when options.set is true', async () => {
     loadSession.mockResolvedValue({ tabs: [], tags: ['old'] });
     saveSession.mockResolvedValue();
