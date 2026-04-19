@@ -34,6 +34,12 @@ Remove a session:
 tabstack delete my-session
 ```
 
+Rename a session:
+
+```bash
+tabstack rename my-session new-name
+```
+
 Sessions are stored locally as JSON files in `~/.tabstack/sessions/`.
 
 ## Supported Browsers
