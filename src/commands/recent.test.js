@@ -37,6 +37,17 @@ describe('getRecentSessions', () => {
     const result = getRecentSessions(5);
     expect(result.length).toBe(0);
   });
+
+  it('includes correct tabCount in results', () => {
+    storage.listSessions.mockReturnValue(['proj']);
+    storage.loadSession.mockReturnValue({
+      savedAt: '2024-03-01T00:00:00Z',
+      tabs: ['tab1', 'tab2', 'tab3']
+    });
+
+    const result = getRecentSessions(1);
+    expect(result[0].tabCount).toBe(3);
+  });
 });
 
 describe('formatRecent', () => {
