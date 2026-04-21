@@ -15,8 +15,13 @@ const { extractDomain } = require('./sort');
  * @param {string} name - session name
  * @param {number} limit - max tabs to keep per domain (default 1)
  * @returns {{ kept: number, removed: number, session: object }}
+ * @throws {RangeError} if limit is less than 1
  */
 async function foldSession(name, limit = 1) {
+  if (limit < 1) {
+    throw new RangeError(`limit must be at least 1, got ${limit}`);
+  }
+
   const session = await loadSession(name);
   const tabs = session.tabs || [];
 
