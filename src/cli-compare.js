@@ -15,10 +15,16 @@ if (args.includes('--help') || args.includes('-h')) {
   process.exit(0);
 }
 
-const [name1, name2] = args;
+const [name1, name2, ...extra] = args;
 
 if (!name1 || !name2) {
   console.error('Error: two session names required');
+  console.error('Usage: tabstack compare <session1> <session2>');
+  process.exit(1);
+}
+
+if (extra.length > 0) {
+  console.error(`Error: unexpected arguments: ${extra.join(', ')}`);
   console.error('Usage: tabstack compare <session1> <session2>');
   process.exit(1);
 }
