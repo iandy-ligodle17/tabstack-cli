@@ -31,6 +31,11 @@ if (saveIdx !== -1) {
     console.error('Error: --save requires a session name');
     process.exit(1);
   }
+  // Make sure saveName doesn't look like a flag
+  if (saveName.startsWith('--')) {
+    console.error('Error: --save requires a valid session name, not a flag');
+    process.exit(1);
+  }
   sessionNames = args.filter((_, i) => i !== saveIdx && i !== saveIdx + 1);
 }
 
