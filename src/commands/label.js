@@ -23,6 +23,8 @@ async function removeLabel(sessionName, label) {
   if (!session) throw new Error(`Session "${sessionName}" not found`);
 
   const normalized = label.trim().toLowerCase();
+  if (!normalized) throw new Error('Label cannot be empty');
+
   const before = (session.labels || []).length;
   session.labels = (session.labels || []).filter(l => l !== normalized);
 
