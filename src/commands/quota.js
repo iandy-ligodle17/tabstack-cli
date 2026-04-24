@@ -24,6 +24,9 @@ async function checkQuota(sessionName = null) {
 
   if (sessionName) {
     const session = await loadSession(sessionName);
+    if (!session) {
+      throw new Error(`Session "${sessionName}" not found`);
+    }
     const tabCount = session.tabs ? session.tabs.length : 0;
     result.tabs = {
       sessionName,
