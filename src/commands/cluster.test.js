@@ -53,6 +53,14 @@ test('handles invalid URLs gracefully', async () => {
   expect(result.clusters['__invalid__']).toHaveLength(2);
 });
 
+test('returns empty clusters and unclustered for session with no tabs', async () => {
+  loadSession.mockResolvedValue(makeSession([]));
+
+  const result = await clusterTabs('test', { minSize: 1 });
+  expect(result.clusters).toEqual({});
+  expect(result.unclustered).toHaveLength(0);
+});
+
 test('formatClusterResult shows clusters and unclustered', () => {
   const result = {
     clusters: {
