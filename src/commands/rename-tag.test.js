@@ -21,6 +21,15 @@ describe('renameTag', () => {
     }));
   });
 
+  it('preserves tag order when renaming', async () => {
+    loadSession.mockResolvedValue({ tabs: [], tags: ['alpha', 'beta', 'gamma'] });
+    saveSession.mockResolvedValue();
+
+    const result = await renameTag('mysession', 'beta', 'delta');
+
+    expect(result.tags).toEqual(['alpha', 'delta', 'gamma']);
+  });
+
   it('throws if old tag not found', async () => {
     loadSession.mockResolvedValue({ tabs: [], tags: ['work'] });
 
